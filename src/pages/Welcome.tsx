@@ -1,28 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Languages, Phone, Mail, Chrome } from "lucide-react";
-import { motion } from "framer-motion";
-import { useLanguage } from "@/hooks/useLanguage";
 import heroImage from "@/assets/hero-finance.jpg";
 
+const LANGUAGES = [
+  { code: "uz", name: "O'zbek", flag: "🇺🇿" },
+  { code: "ru", name: "Русский", flag: "🇷🇺" },
+  { code: "en", name: "English", flag: "🇺🇸" },
+];
+
 const Welcome = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [showAuth, setShowAuth] = useState(false);
   const navigate = useNavigate();
-  const { t, changeLanguage, languages, currentLanguage } = useLanguage();
-
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-      changeLanguage(savedLanguage);
-      setShowAuth(true);
-    }
-  }, [changeLanguage]);
 
   const handleLanguageSelect = (langCode: string) => {
-    changeLanguage(langCode);
-    setTimeout(() => setShowAuth(true), 300);
+    setSelectedLanguage(langCode);
+    setShowAuth(true);
   };
 
   const handleAuth = (method: string) => {
@@ -41,157 +37,93 @@ const Welcome = () => {
   if (!showAuth) {
     return (
       <div className="min-h-screen bg-gradient-background flex flex-col items-center justify-center p-6">
-        <motion.div 
-          className="w-full max-w-md space-y-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="w-full max-w-md space-y-8">
           {/* Hero Section */}
-          <motion.div 
-            className="text-center space-y-4"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
-          >
-            <motion.div 
-              className="w-32 h-32 mx-auto rounded-2xl overflow-hidden shadow-large"
-              initial={{ scale: 0.8, rotate: -5 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-            >
+          <div className="text-center space-y-4">
+            <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden shadow-large">
               <img src={heroImage} alt="Hisobot AI" className="w-full h-full object-cover" />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <h1 className="text-3xl font-bold text-foreground mb-2">{t('welcome')}</h1>
-              <p className="text-muted-foreground">{t('subtitle')}</p>
-            </motion.div>
-          </motion.div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Hisobot AI</h1>
+              <p className="text-muted-foreground">Your Personal Finance Assistant</p>
+            </div>
+          </div>
 
           {/* Language Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <Card className="p-6 shadow-medium border border-primary/10 bg-card/80 backdrop-blur-sm">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-foreground">
-                  <Languages className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold">{t('selectLanguage')}</h3>
-                </div>
-                <div className="space-y-3">
-                  {languages.map((lang, index) => (
-                    <motion.div
-                      key={lang.code}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Button
-                        variant={currentLanguage === lang.code ? "default" : "outline"}
-                        className="w-full justify-start transition-all duration-300 hover:shadow-soft"
-                        onClick={() => handleLanguageSelect(lang.code)}
-                      >
-                        <span className="text-lg mr-3">{lang.flag}</span>
-                        {lang.name}
-                      </Button>
-                    </motion.div>
-                  ))}
-                </div>
+          <Card className="p-6 shadow-medium">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-foreground">
+                <Languages className="w-5 h-5" />
+                <h3 className="font-semibold">Choose your language</h3>
               </div>
-            </Card>
-          </motion.div>
-        </motion.div>
+              <div className="space-y-3">
+                {LANGUAGES.map((lang) => (
+                  <Button
+                    key={lang.code}
+                    variant={selectedLanguage === lang.code ? "default" : "outline"}
+                    className="w-full justify-start"
+                    onClick={() => handleLanguageSelect(lang.code)}
+                  >
+                    <span className="text-lg mr-3">{lang.flag}</span>
+                    {lang.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <motion.div 
-      className="min-h-screen bg-gradient-background flex flex-col items-center justify-center p-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <motion.div 
-        className="w-full max-w-md space-y-8"
-        initial={{ scale: 0.95, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        transition={{ delay: 0.1, type: "spring" }}
-      >
+    <div className="min-h-screen bg-gradient-background flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md space-y-8">
         {/* Header */}
-        <motion.div 
-          className="text-center space-y-2"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <h2 className="text-2xl font-bold text-foreground">{t('welcome')}</h2>
-          <p className="text-muted-foreground">{t('subtitle')}</p>
-        </motion.div>
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold text-foreground">Welcome back!</h2>
+          <p className="text-muted-foreground">Sign in to continue</p>
+        </div>
 
         {/* Auth Methods */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Card className="p-6 shadow-medium border border-primary/10 bg-card/90 backdrop-blur-sm">
-            <div className="space-y-4">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  className="w-full bg-gradient-telegram hover:opacity-90 transition-all duration-300 shadow-soft"
-                  onClick={() => handleAuth("phone")}
-                >
-                  <Phone className="w-5 h-5 mr-2" />
-                  {t('loginWithPhone')}
-                </Button>
-              </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  variant="outline"
-                  className="w-full transition-all duration-300 hover:shadow-soft"
-                  onClick={() => handleAuth("email")}
-                >
-                  <Mail className="w-5 h-5 mr-2" />
-                  {t('loginWithEmail')}
-                </Button>
-              </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  variant="outline"
-                  className="w-full transition-all duration-300 hover:shadow-soft"
-                  onClick={() => handleAuth("google")}
-                >
-                  <Chrome className="w-5 h-5 mr-2" />
-                  {t('loginWithGoogle')}
-                </Button>
-              </motion.div>
-            </div>
-          </Card>
-        </motion.div>
+        <Card className="p-6 shadow-medium">
+          <div className="space-y-4">
+            <Button
+              variant="hero"
+              className="w-full"
+              onClick={() => handleAuth("phone")}
+            >
+              <Phone className="w-5 h-5" />
+              Continue with Phone
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => handleAuth("email")}
+            >
+              <Mail className="w-5 h-5" />
+              Continue with Email
+            </Button>
+            
+            <Button
+              variant="soft"
+              className="w-full"
+              onClick={() => handleAuth("google")}
+            >
+              <Chrome className="w-5 h-5" />
+              Continue with Google
+            </Button>
+          </div>
+        </Card>
 
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-        >
+        <div className="text-center">
           <p className="text-xs text-muted-foreground">
             By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </div>
+      </div>
+    </div>
   );
 };
 

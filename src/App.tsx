@@ -11,7 +11,6 @@ import Analytics from "./pages/Analytics";
 import Planned from "./pages/Planned";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import './i18n';
 
 const queryClient = new QueryClient();
 
